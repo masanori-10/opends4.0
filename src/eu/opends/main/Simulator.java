@@ -611,6 +611,7 @@ public class Simulator extends SimulationBasics
     
 	private void updateCoordinateSystem()
 	{
+		System.out.println("updateCorrdingSystem");
 		getCoordinateSystem().getChild("x-cone").setLocalTranslation(car.getPosition().getX(), 0, 0);
 		getCoordinateSystem().getChild("y-cone").setLocalTranslation(0, car.getPosition().getY(), 0);
 		getCoordinateSystem().getChild("z-cone").setLocalTranslation(0, 0, car.getPosition().getZ());
