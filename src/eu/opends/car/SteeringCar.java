@@ -18,6 +18,7 @@
 
 package eu.opends.car;
 
+
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -177,10 +178,11 @@ public class SteeringCar extends Car
 	// will be called, in every frame
 	public void update(float tpf)
 	{
+
 		// accelerate
 		float pAccel = 0;
 //		pAccel = -2000;
-		System.out.println("------position is " + getPosition());
+
 		if(!engineOn)
 		{
 			// apply 0 acceleration when engine not running
