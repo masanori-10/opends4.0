@@ -30,9 +30,9 @@ public class StartPropertiesReader
 {
 	private Properties properties = new Properties();
 	private boolean loadDefaults = false;
-	private boolean showSettingsScreen = true;
-	private String drivingTaskPath = "";
-	private String driverName = "";
+	private boolean showSettingsScreen = false;
+	private String drivingTaskPath = "/Users/apple/opends4.0/assets/DrivingTasks/Projects/Idealtest2/idealtest2.xml";
+	private String driverName = "Kiichi";
 	
 	
 	public AppSettings getSettings(Simulator sim) 

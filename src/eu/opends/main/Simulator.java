@@ -519,14 +519,11 @@ public class Simulator extends SimulationBasics
 			super.simpleUpdate(tpf);
 			
 			// updates camera
-			System.out.println("-------update,Camera-------");
 			cameraFactory.updateCamera();
 		
 			if(!isPause())
-				System.out.println("-------!isPause()-------");
 				car.getTransmission().updateRPM(tpf);
 		
-				System.out.println("-------PanelCenter.update()-------");
 			PanelCenter.update();
 		
 			triggerCenter.doTriggerChecks();
@@ -536,7 +533,6 @@ public class Simulator extends SimulationBasics
 			// send camera data via TCP to Lightning
 			if(lightningClient != null)
 				lightningClient.sendCameraData(cam);
-			System.out.println("-------lightningClient-------");
 
 			
 			// send car data via TCP to CAN-bus
@@ -547,7 +543,6 @@ public class Simulator extends SimulationBasics
 				multiDriverClient.update();
 			
 			if(!isPause())
-				System.out.println("-------car.Update()-------");
 				car.update(tpf);
 			
 			// TODO start thread in init-method to update traffic
@@ -611,7 +606,6 @@ public class Simulator extends SimulationBasics
     
 	private void updateCoordinateSystem()
 	{
-		System.out.println("updateCorrdingSystem");
 		getCoordinateSystem().getChild("x-cone").setLocalTranslation(car.getPosition().getX(), 0, 0);
 		getCoordinateSystem().getChild("y-cone").setLocalTranslation(0, car.getPosition().getY(), 0);
 		getCoordinateSystem().getChild("z-cone").setLocalTranslation(0, 0, car.getPosition().getZ());
@@ -646,7 +640,7 @@ public class Simulator extends SimulationBasics
 	 * destroy() will be called subsequently.
 	 */
 	
-	//@Override
+	@Override
     public void stop()
     {
 		logger.info("started stop()");		

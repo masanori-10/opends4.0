@@ -129,6 +129,9 @@ public class SteeringCar extends Car
     	// if initialSpeed > 0 --> cruise control will be on at startup
     	targetSpeedCruiseControl = scenarioLoader.getCarProperty(CarProperty.cruiseControl_initialSpeed, SimulationDefaults.cruiseControl_initialSpeed);
 		isCruiseControl = (targetSpeedCruiseControl > 0);
+		
+
+
     	
 		SettingsLoader settingsLoader = SimulationBasics.getSettingsLoader();
         if(settingsLoader.getSetting(Setting.Simphynity_enableConnection, SimulationDefaults.Simphynity_enableConnection))
@@ -176,6 +179,8 @@ public class SteeringCar extends Car
 	{
 		// accelerate
 		float pAccel = 0;
+//		pAccel = -2000;
+		System.out.println("------position is " + getPosition());
 		if(!engineOn)
 		{
 			// apply 0 acceleration when engine not running
@@ -183,16 +188,19 @@ public class SteeringCar extends Car
 		}
 		else if(isAutoAcceleration && (getCurrentSpeedKmh() < minSpeed))
 		{
+			System.out.println("inAutoAccel");
 			// apply maximum acceleration (= -1 for forward) to maintain minimum speed
 			pAccel = powerTrain.getPAccel(tpf, -1) * 30f;
 		}
 		else if(isCruiseControl && (getCurrentSpeedKmh() < targetSpeedCruiseControl))
 		{
+			System.out.println("inCruiseControl");
 			// apply maximum acceleration (= -1 for forward) to maintain target speed
 			pAccel = powerTrain.getPAccel(tpf, -1) * 30f;
 			
 			if(isAdaptiveCruiseControl)
 			{
+				System.out.println("inAdaptiveCruiseControl");
 				// lower speed if leading car is getting to close
 				pAccel = getAdaptivePAccel(pAccel);
 			}
@@ -200,6 +208,7 @@ public class SteeringCar extends Car
 		else
 		{
 			// apply acceleration according to gas pedal state
+			System.out.println("inPedalState");
 			pAccel = powerTrain.getPAccel(tpf, acceleratorPedalIntensity) * 30f;
 		}
 		transmission.performAcceleration(pAccel);
@@ -209,6 +218,7 @@ public class SteeringCar extends Car
 		
 		if(handBrakeApplied)
 		{
+			System.out.println("handBrakeApplied");
 			// hand brake
 			carControl.brake(maxBrakeForce);
 			PanelCenter.setHandBrakeIndicator(true);
@@ -352,10 +362,13 @@ public class SteeringCar extends Car
 		brakePedalIntensity = 0f;
 
 		// check distance from traffic vehicles
+		System.out.println("--------firstStep");
 		for(TrafficObject vehicle : PhysicalTraffic.getTrafficObjectList())
 		{
+			System.out.println("--------secondStep");
 			if(belowSafetyDistance(vehicle.getPosition()))
 			{
+				System.out.println("----vehicle distance is "+ vehicle.getPosition());
 				pAccel = 0;
 			
 				if(vehicle.getPosition().distance(getPosition()) < emergencyBrakeDistance)
@@ -413,6 +426,7 @@ public class SteeringCar extends Car
 	
 	public float getDistanceToRoadSurface() 
 	{
+		System.out.println("DistanceToSurface");
 		// reset collision results list
 		CollisionResults results = new CollisionResults();
 
