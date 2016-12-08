@@ -504,8 +504,8 @@ public class Simulator extends SimulationBasics
 	
 	
     @Override
-//    public void simpleUpdate(float tpf) 
-//    {
+    public void simpleUpdate(float tpf) 
+    {
 ///*
 // * here , this part , is the one to Update display's frame.
 // * Most important part .
@@ -513,130 +513,130 @@ public class Simulator extends SimulationBasics
 // * Kiichi 
 // * 
 // */
-//    	
-//    	if(initializationFinished)
-//    	{
-//			super.simpleUpdate(tpf);
-//			
-//			// updates camera
-//			System.out.println("-------update,Camera-------");
-//			cameraFactory.updateCamera();
-//		
-//			if(!isPause())
-//				System.out.println("-------!isPause()-------");
-//				car.getTransmission().updateRPM(tpf);
-//		
-//				System.out.println("-------PanelCenter.update()-------");
-//			PanelCenter.update();
-//		
-//			triggerCenter.doTriggerChecks();
-//		
-//			updateDataWriter();
-//			
-//			// send camera data via TCP to Lightning
-//			if(lightningClient != null)
-//				lightningClient.sendCameraData(cam);
-//			System.out.println("-------lightningClient-------");
-//
-//			
-//			// send car data via TCP to CAN-bus
-//			if(canClient != null)
-//				canClient.sendCarData();
-//				
-//			if(multiDriverClient != null)
-//				multiDriverClient.update();
-//			
-//			if(!isPause())
-//				System.out.println("-------car.Update()-------");
-//				car.update(tpf);
-//			
-//			// TODO start thread in init-method to update traffic
-//			physicalTraffic.update(tpf); 
-//			
-//			SpeedControlCenter.update();
-//			
-//			// update necessary even in pause
-//			AudioCenter.update(tpf, cam);
-//			
-//			if(!isPause())
-//				steeringTask.update(tpf);
-//			
-//			//if(!isPause())
-//				//getCameraFlight().play();
-//			
-//			threeVehiclePlatoonTask.update(tpf);
-//			
-//			motorwayTask.update(tpf);
-//			
-//			moviePlayer.update(tpf);
-//			
-//			if(cameraFlight != null)
-//				cameraFlight.update();
-//			
-//			reactionCenter.update();
-//			
-//			// update effects
-//			effectCenter.update(tpf);
-//			
-//			// forward instruction screen if available
-//			if(instructionScreenID != null)
-//			{
-//				instructionScreenGUI.showDialog(instructionScreenID);
-//				instructionScreenID = null;
-//			}
-//			
-//			if(eyetrackerCenter != null)
-//				eyetrackerCenter.update();
-//
-//    		if(frameCounter == 5)
-//    		{
-//    			if(settingsLoader.getSetting(Setting.General_pauseAfterStartup, SimulationDefaults.General_pauseAfterStartup))
-//    				setPause(true);
-//    		}
-//    		frameCounter++;
-//    		
-//    		
-////    		car.getAcceleratorPedalIntensity();
-////    		car.setAutoAcceleration(true);
-////    		car.isAutoAcceleration();
-////    		car.getAcceleration();
-////    		car.getAcceleration();
-//    		
-//    		
-//    		joystickSpringController.update(tpf);	
-//    		updateCoordinateSystem();
-//    	}
-//    }
+   	
+    	if(initializationFinished)
+    	{
+			super.simpleUpdate(tpf);
+			
+			// updates camera
+			System.out.println("-------update,Camera-------");
+			cameraFactory.updateCamera();
+		
+			if(!isPause())
+				System.out.println("-------!isPause()-------");
+				car.getTransmission().updateRPM(tpf);
+		
+				System.out.println("-------PanelCenter.update()-------");
+			PanelCenter.update();
+		
+			triggerCenter.doTriggerChecks();
+		
+			updateDataWriter();
+			
+			// send camera data via TCP to Lightning
+			if(lightningClient != null)
+				lightningClient.sendCameraData(cam);
+			System.out.println("-------lightningClient-------");
+
+			
+			// send car data via TCP to CAN-bus
+			if(canClient != null)
+				canClient.sendCarData();
+				
+			if(multiDriverClient != null)
+				multiDriverClient.update();
+			
+			if(!isPause())
+				System.out.println("-------car.Update()-------");
+				car.update(tpf);
+			
+			// TODO start thread in init-method to update traffic
+			physicalTraffic.update(tpf); 
+			
+			SpeedControlCenter.update();
+			
+			// update necessary even in pause
+			AudioCenter.update(tpf, cam);
+		
+			if(!isPause())
+				steeringTask.update(tpf);
+			
+			//if(!isPause())
+				//getCameraFlight().play();
+			
+			threeVehiclePlatoonTask.update(tpf);
+			
+			motorwayTask.update(tpf);
+			
+			moviePlayer.update(tpf);
+			
+		if(cameraFlight != null)
+				cameraFlight.update();
+			
+			reactionCenter.update();
+			
+			// update effects
+			effectCenter.update(tpf);
+			
+			// forward instruction screen if available
+			if(instructionScreenID != null)
+			{
+				instructionScreenGUI.showDialog(instructionScreenID);
+				instructionScreenID = null;
+			}
+			
+			if(eyetrackerCenter != null)
+				eyetrackerCenter.update();
+
+    		if(frameCounter == 5)
+    		{
+   			if(settingsLoader.getSetting(Setting.General_pauseAfterStartup, SimulationDefaults.General_pauseAfterStartup))
+    				setPause(true);
+    		}
+    		frameCounter++;
+    		
+    		
+//    		car.getAcceleratorPedalIntensity();
+//    		car.setAutoAcceleration(true);
+//    		car.isAutoAcceleration();
+//    		car.getAcceleration();
+//    		car.getAcceleration();
+    		
+    		
+    		joystickSpringController.update(tpf);	
+    		updateCoordinateSystem();
+    	}
+    }
 
     
-//	private void updateCoordinateSystem()
-//	{
-//		getCoordinateSystem().getChild("x-cone").setLocalTranslation(car.getPosition().getX(), 0, 0);
-//		getCoordinateSystem().getChild("y-cone").setLocalTranslation(0, car.getPosition().getY(), 0);
-//		getCoordinateSystem().getChild("z-cone").setLocalTranslation(0, 0, car.getPosition().getZ());
-//	}
+	private void updateCoordinateSystem()
+	{
+		getCoordinateSystem().getChild("x-cone").setLocalTranslation(car.getPosition().getX(), 0, 0);
+		getCoordinateSystem().getChild("y-cone").setLocalTranslation(0, car.getPosition().getY(), 0);
+		getCoordinateSystem().getChild("z-cone").setLocalTranslation(0, 0, car.getPosition().getZ());
+	}
 	
 
-//	private void updateDataWriter() 
-//	{
-//		if (dataWriter != null && dataWriter.isDataWriterEnabled()) 
-//		{
-//			if(!isPause())
-//				dataWriter.saveAnalyzerData();
-//
-//			if (!dataWriterQuittable)
-//				dataWriterQuittable = true;
-//		} 
-//		else 
-//		{
-//			if (dataWriterQuittable) 
-//			{
-//				dataWriter.quit();
-//				dataWriter = null;
-//				dataWriterQuittable = false;
-//			}
-//		}
-//	}
+	private void updateDataWriter() 
+	{
+		if (dataWriter != null && dataWriter.isDataWriterEnabled()) 
+		{
+			if(!isPause())
+				dataWriter.saveAnalyzerData();
+
+			if (!dataWriterQuittable)
+				dataWriterQuittable = true;
+		} 
+		else 
+		{
+			if (dataWriterQuittable) 
+			{
+				dataWriter.quit();
+				dataWriter = null;
+				dataWriterQuittable = false;
+			}
+		}
+	}
 	
 	
 	/**
@@ -645,6 +645,7 @@ public class Simulator extends SimulationBasics
 	 * destroy() will be called subsequently.
 	 */
 	
+	//@Override
     public void stop()
     {
 		logger.info("started stop()");		
