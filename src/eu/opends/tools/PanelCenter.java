@@ -737,7 +737,7 @@ public class PanelCenter
 	        cogText = new BitmapText(gaugeFont, false);          
 	        cogText.setSize(gaugeFont.getCharSet().getRenderedSize());
 	        cogText.setColor(ColorRGBA.Black);
-	        cogText.setText("360°");
+	        cogText.setText("360ï¿½");
 	        cogText.setLocalScale(5.5f, 5.5f, 1);
 	        cogText.setLocalTranslation(910,1170,0);
 	        displayLeftNode.attachChild(cogText);
@@ -1015,7 +1015,7 @@ public class PanelCenter
 	        maritimeLatitudeText.setText("Breite: " + df3.format(car.getGeoPosition().getX()) + " N");
 	        
 	        // OpenDS-Maritime - longitude
-	        maritimeLongitudeText.setText("Länge: " + df3.format(car.getGeoPosition().getY()) + " O");
+	        maritimeLongitudeText.setText("Lï¿½nge: " + df3.format(car.getGeoPosition().getY()) + " O");
 	        
 	        // OpenDS-Maritime - scenario
 	        maritimeScenarioText.setText("Szenario: " + SimulationBasics.getDrivingTask().getFileName().replace(".xml", ""));
@@ -1031,9 +1031,9 @@ public class PanelCenter
         
         if(maritimeDisplayMode == MaritimeDisplayMode.MultiFunctionDisplay || maritimeDisplayMode == MaritimeDisplayMode.All)
         {
-	        cogText.setText(df4.format(Math.round(car.getHeadingDegree()))+"°");
+	        cogText.setText(df4.format(Math.round(car.getHeadingDegree()))+"ï¿½");
 	        sogText.setText(df.format(car.getCurrentSpeedKmh()/1.852f));
-	        magText.setText(df4.format((Math.round(car.getHeadingDegree())+3)%360)+"°");
+	        magText.setText(df4.format((Math.round(car.getHeadingDegree())+3)%360)+"ï¿½");
 	        latText.setText(getDegreeText(car.getGeoPosition().getX()));
 	        longText.setText(getDegreeText(car.getGeoPosition().getY()));
 	        timeText.setText(sdf2.format(new Date()));
@@ -1050,7 +1050,7 @@ public class PanelCenter
         double minutes = ((decimalValue-degree) * 60);
         String minutesFormatted = df.format(Math.round(minutes*1000f)/1000f);
 
-        return degree + "°" + minutesFormatted + "'";
+        return degree + "ï¿½" + minutesFormatted + "'";
     }
     
     
@@ -1077,6 +1077,7 @@ public class PanelCenter
 
 	private static void setSpeedIndicator(float speed) 
 	{
+		//System.out.println("PanelCenter.setSpeedIndicator");
 		// bounds of speed indicator
 		speed = Math.min(Math.max(speed, 0), 260);
 		
@@ -1095,6 +1096,8 @@ public class PanelCenter
 	
 	private static void setRPMIndicator(float rpm) 
 	{
+		//System.out.println("PanelCenter.setRPMIndicator");
+
 		// bounds of speed indicator
 		rpm = Math.min(Math.max(rpm, 0), 7500);
 		
@@ -1116,6 +1119,8 @@ public class PanelCenter
 	
 	public static void setCruiseControlIndicator(float speed) 
 	{
+		//System.out.println("PanelCenter.setCruiseControlIndecator");
+
 		// bounds of cruise control indicator
 		speed = Math.min(Math.max(speed, 0), 260);
 		
@@ -1135,6 +1140,7 @@ public class PanelCenter
 	
 	public static void unsetCruiseControlIndicator() 
 	{
+		System.out.println("PanelCenter.unsetCruiseControlIndicator");
 		cruiseControlIndicator.setCullHint(CullHint.Always);
 	}
 	
@@ -1250,11 +1256,15 @@ public class PanelCenter
 			// OpenDS-Rift
 			riftSpeedText.setColor(ColorRGBA.White);
 		}
+		
+		//System.out.println("PanelCenter.updateSpeedText = " + carSpeed);
+
 	}
 
 
 	public static void setGearIndicator(Integer gear, boolean isAutomaticTransmission) 
 	{
+		//System.out.println("PanelCenter.setGearIndicator");
 		// OpenDS-Rift - set gear text
 		if(isAutomaticTransmission) {
 			gearText.setText("Gear: A" + gear);

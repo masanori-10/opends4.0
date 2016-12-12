@@ -61,7 +61,7 @@ public class SteeringCar extends Car
     private SimphynityController simphynityController;
     
     // adaptive cruise control
-	private boolean isAdaptiveCruiseControl = false;
+	private boolean isAdaptiveCruiseControl = true;
 	private float minLateralSafetyDistance;
 	private float minForwardSafetyDistance;
 	private float emergencyBrakeDistance;
@@ -178,10 +178,13 @@ public class SteeringCar extends Car
 	// will be called, in every frame
 	public void update(float tpf)
 	{
+		System.out.println("icCruiseControl = "+ isCruiseControl);
+		System.out.println("getCurrentSpeedKmh = "+ getCurrentSpeedKmh());
+		System.out.println("targetSpeedCruiseControl = "+ targetSpeedCruiseControl);
+		System.out.println((getCurrentSpeedKmh() < targetSpeedCruiseControl));
 
 		// accelerate
 		float pAccel = 0;
-//		pAccel = -2000;
 
 		if(!engineOn)
 		{
@@ -194,7 +197,11 @@ public class SteeringCar extends Car
 			// apply maximum acceleration (= -1 for forward) to maintain minimum speed
 			pAccel = powerTrain.getPAccel(tpf, -1) * 30f;
 		}
-		else if(isCruiseControl && (getCurrentSpeedKmh() < targetSpeedCruiseControl))
+		/*
+		 * Kiichi has changed here ..
+		 * */
+		//else if(isCruiseControl && (getCurrentSpeedKmh() < targetSpeedCruiseControl))
+		else if(isCruiseControl && (getCurrentSpeedKmh() > targetSpeedCruiseControl))
 		{
 			System.out.println("inCruiseControl");
 			// apply maximum acceleration (= -1 for forward) to maintain target speed
@@ -210,7 +217,7 @@ public class SteeringCar extends Car
 		else
 		{
 			// apply acceleration according to gas pedal state
-			System.out.println("inPedalState");
+			System.out.println("pedalstate");
 			pAccel = powerTrain.getPAccel(tpf, acceleratorPedalIntensity) * 30f;
 		}
 		transmission.performAcceleration(pAccel);
@@ -245,8 +252,12 @@ public class SteeringCar extends Car
         rightHeadLight.setDirection(carModel.getRightLightDirection());
         
         // cruise control indicator
-        if(isCruiseControl)
+        isCruiseControl = true;
+        if(isCruiseControl){
         	PanelCenter.setCruiseControlIndicator(targetSpeedCruiseControl);
+        	System.out.println("targetSpeedCruiseControl" + targetSpeedCruiseControl);
+        	//!!!!!!!targetSpeedCruiseControl IS ALWAYS 0.0!!!!!!!!
+        	}
         else
         	PanelCenter.unsetCruiseControlIndicator();
         
