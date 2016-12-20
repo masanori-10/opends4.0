@@ -69,8 +69,7 @@ public class SteeringCar extends Car
 	
 	// crosswind (will influence steering angle)
 	private Crosswind crosswind = new Crosswind("left", 0, 0);
-	
-    
+	    
 	public SteeringCar(Simulator sim) 
 	{		
 		this.sim = sim;
@@ -178,10 +177,10 @@ public class SteeringCar extends Car
 	// will be called, in every frame
 	public void update(float tpf)
 	{
-		System.out.println("icCruiseControl = "+ isCruiseControl);
-		System.out.println("getCurrentSpeedKmh = "+ getCurrentSpeedKmh());
-		System.out.println("targetSpeedCruiseControl = "+ targetSpeedCruiseControl);
-		System.out.println((getCurrentSpeedKmh() < targetSpeedCruiseControl));
+		//main Car's speed is below. isCruiseControl is also true.
+		//System.out.println("getCurrentSpeedKmh = "+ getCurrentSpeedKmh());
+		
+		//targetSpeedCruiseControl is ALWAYS 0.0
 
 		// accelerate
 		float pAccel = 0;
@@ -203,13 +202,13 @@ public class SteeringCar extends Car
 		//else if(isCruiseControl && (getCurrentSpeedKmh() < targetSpeedCruiseControl))
 		else if(isCruiseControl && (getCurrentSpeedKmh() > targetSpeedCruiseControl))
 		{
-			System.out.println("inCruiseControl");
 			// apply maximum acceleration (= -1 for forward) to maintain target speed
-			pAccel = powerTrain.getPAccel(tpf, -1) * 30f;
+			pAccel = powerTrain.getPAccel(tpf, -1) * 20f;
+			isAdaptiveCruiseControl = true;
 			
 			if(isAdaptiveCruiseControl)
 			{
-				System.out.println("inAdaptiveCruiseControl");
+				//System.out.println("inAdaptiveCruiseControl");
 				// lower speed if leading car is getting to close
 				pAccel = getAdaptivePAccel(pAccel);
 			}
@@ -255,8 +254,7 @@ public class SteeringCar extends Car
         isCruiseControl = true;
         if(isCruiseControl){
         	PanelCenter.setCruiseControlIndicator(targetSpeedCruiseControl);
-        	System.out.println("targetSpeedCruiseControl" + targetSpeedCruiseControl);
-        	//!!!!!!!targetSpeedCruiseControl IS ALWAYS 0.0!!!!!!!!
+        	//targetSpeedCruiseControl IS ALWAYS 0.0 !!!
         	}
         else
         	PanelCenter.unsetCruiseControlIndicator();
@@ -373,20 +371,17 @@ public class SteeringCar extends Car
 	private float getAdaptivePAccel(float pAccel)
 	{
 		brakePedalIntensity = 0f;
-
 		// check distance from traffic vehicles
-		System.out.println("--------firstStep");
+		// length of TrafficObjectList is just 1. only RobotCar
 		for(TrafficObject vehicle : PhysicalTraffic.getTrafficObjectList())
 		{
-			System.out.println("--------secondStep");
 			if(belowSafetyDistance(vehicle.getPosition()))
 			{
-				System.out.println("----vehicle distance is "+ vehicle.getPosition());
 				pAccel = 0;
-			
 				if(vehicle.getPosition().distance(getPosition()) < emergencyBrakeDistance)
 					brakePedalIntensity = 1f;
-			}
+				//emergencyBrakeDistance is consistently 20;
+				}
 		}
 		
 		return pAccel;
@@ -396,7 +391,7 @@ public class SteeringCar extends Car
 	private boolean belowSafetyDistance(Vector3f obstaclePos) 
 	{	
 		float distance = obstaclePos.distance(getPosition());
-		
+		//System.out.println("distance is " + distance);
 		// angle between driving direction of traffic car and direction towards obstacle
 		// (consider 3D space, because obstacle could be located on a bridge above traffic car)
 		Vector3f carFrontPos = frontGeometry.getWorldTranslation();
@@ -409,6 +404,7 @@ public class SteeringCar extends Car
 		if((lateralDistance < minLateralSafetyDistance) && (forwardDistance > 0) && 
 				(forwardDistance < Math.max(0.5f * getCurrentSpeedKmh(), minForwardSafetyDistance)))
 		{
+			System.out.println("minForwardSafetyDistance is  "+ minForwardSafetyDistance);
 			return true;
 		}
 		
@@ -461,6 +457,10 @@ public class SteeringCar extends Car
 		}
 		
 		return -1;
+	}
+	
+	public float getEmergencyBrakeDistance(){
+		return emergencyBrakeDistance;
 	}
 
 

@@ -105,6 +105,8 @@ public class Simulator extends SimulationBasics
     	return car;
     }
     
+    //private float emergencyBrakeDistance = car.getEmergencyBrakeDistance();
+    
     private PhysicalTraffic physicalTraffic;
     public PhysicalTraffic getPhysicalTraffic()
     {
@@ -506,14 +508,7 @@ public class Simulator extends SimulationBasics
     @Override
     public void simpleUpdate(float tpf) 
     {
-///*
-// * here , this part , is the one to Update display's frame.
-// * Most important part .
-// * 
-// * Kiichi 
-// * 
-// */
-   	
+// * this part is for Updating display's frame. 
     	if(initializationFinished)
     	{
 			super.simpleUpdate(tpf);
@@ -588,15 +583,7 @@ public class Simulator extends SimulationBasics
    			if(settingsLoader.getSetting(Setting.General_pauseAfterStartup, SimulationDefaults.General_pauseAfterStartup))
     				setPause(true);
     		}
-    		frameCounter++;
-    		
-    		
-//    		car.getAcceleratorPedalIntensity();
-//    		car.setAutoAcceleration(true);
-//    		car.isAutoAcceleration();
-//    		car.getAcceleration();
-//    		car.getAcceleration();
-    		
+    		frameCounter++;    		
     		
     		joystickSpringController.update(tpf);	
     		updateCoordinateSystem();
@@ -785,6 +772,7 @@ public class Simulator extends SimulationBasics
 	    	sim.setPauseOnLostFocus(false);
 	    	
 			sim.start();
+			//System.out.println("emergencyBrakeDistance is " + emergencyBrakeDistance);
     	}
     	catch(Exception e1)
     	{
