@@ -145,6 +145,7 @@ public class PowerTrain
 		// as friction coefficient (never 0.0 !!!)
 		float percentage = (resultingPower-10f)/50f;
 		return Math.max(0.2f, Math.min(1.0f, percentage));
+		// 0.2~1.0fの間で摩擦力が変化する仕様になっている
 	}
 	
 	
