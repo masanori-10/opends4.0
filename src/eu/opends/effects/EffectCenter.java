@@ -51,9 +51,9 @@ public class EffectCenter
 	private Simulator sim;
 	private SnowParticleEmitter snowParticleEmitter;
 	private RainParticleEmitter rainParticleEmitter;
-	private boolean isSnowing;
-	private boolean isRaining;
-	private boolean isFog;
+	private static boolean isSnowing;
+	private static boolean isRaining;
+	private static boolean isFog;
 	private boolean isBloom;
 	private boolean isShadow;
 	private ArrayList<FogFilter> fogFilterList = new ArrayList<FogFilter>();
@@ -227,6 +227,10 @@ public class EffectCenter
 		snowingPercentageHasChanged = true;
 	}
 	
+	public static boolean getIsSnowing(){
+		return isSnowing;
+	}
+	
 	
 	public static float getRainingPercentage() 
 	{
@@ -238,6 +242,10 @@ public class EffectCenter
 	{
 		rainingPercentage = Math.max(percentage, 0);
 		rainingPercentageHasChanged = true;
+	}
+	
+	public static boolean getIsRaining(){
+		return isRaining;
 	}
 
 	
@@ -251,5 +259,9 @@ public class EffectCenter
 	{
 		fogPercentage = Math.max(percentage, 0);
 		fogPercentageHasChanged = true;
+	}
+	
+	public static boolean getIsFog(){
+		return isFog;
 	}
 }

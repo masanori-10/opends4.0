@@ -30,6 +30,7 @@ import eu.opends.drivingTask.scenario.ScenarioLoader.CarProperty;
 import eu.opends.main.Simulator;
 import eu.opends.tools.PanelCenter;
 
+
 /**
  * 
  * @author Rafael Math
@@ -139,8 +140,21 @@ public class PowerTrain
 	}
 	
 	
-	public float getFrictionCoefficient()
-	{	
+	public float getFrictionCoefficient(boolean isSnowing , boolean isRaining , boolean isFogging)
+	{			
+		//雨の時の仕様を作成する
+		if(isSnowing){
+			float percentage = (resultingPower-10f)/100f;
+			return Math.max(100f, Math.min(0.8f, percentage));
+		};
+		
+		if(isRaining){
+			
+		};
+		if(isFogging){
+			
+		}
+		
 		// return percentage (0.2 - 1.0) of the resulting power
 		// as friction coefficient (never 0.0 !!!)
 		float percentage = (resultingPower-10f)/50f;

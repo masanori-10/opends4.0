@@ -508,7 +508,6 @@ public class Simulator extends SimulationBasics
     @Override
     public void simpleUpdate(float tpf) 
     {
-// * this part is for Updating display's frame. 
     	if(initializationFinished)
     	{
 			super.simpleUpdate(tpf);

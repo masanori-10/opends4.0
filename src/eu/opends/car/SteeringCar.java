@@ -42,6 +42,8 @@ import eu.opends.tools.Util;
 import eu.opends.traffic.PhysicalTraffic;
 import eu.opends.traffic.TrafficObject;
 import eu.opends.trafficObjectLocator.TrafficObjectLocator;
+import eu.opends.effects.EffectCenter;
+
 
 /**
  * Driving Car
@@ -69,11 +71,14 @@ public class SteeringCar extends Car
 	
 	// crosswind (will influence steering angle)
 	private Crosswind crosswind = new Crosswind("left", 0, 0);
-	    
+	
+	private boolean isSnowing;
+	private boolean isRaining;
+	private boolean isFog;
+	
 	public SteeringCar(Simulator sim) 
 	{		
-		this.sim = sim;
-		
+		this.sim = sim;		
 		DrivingTask drivingTask = SimulationBasics.getDrivingTask();
 		ScenarioLoader scenarioLoader = drivingTask.getScenarioLoader();
 		
@@ -143,6 +148,7 @@ public class SteeringCar extends Car
 			
 	    	simphynityController = new SimphynityController(sim, this, ip, port);
 		}
+        
 	}
 
 
@@ -184,6 +190,10 @@ public class SteeringCar extends Car
 
 		// accelerate
 		float pAccel = 0;
+		
+		isSnowing = EffectCenter.getIsSnowing();
+		isRaining = EffectCenter.getIsRaining();
+		isFog = EffectCenter.getIsFog();
 
 		if(!engineOn)
 		{
@@ -196,14 +206,17 @@ public class SteeringCar extends Car
 			// apply maximum acceleration (= -1 for forward) to maintain minimum speed
 			pAccel = powerTrain.getPAccel(tpf, -1) * 30f;
 		}
+		
 		/*
-		 * Kiichi has changed here ..
+		 * Kiichi changed
 		 * */
 		//else if(isCruiseControl && (getCurrentSpeedKmh() < targetSpeedCruiseControl))
 		else if(isCruiseControl && (getCurrentSpeedKmh() > targetSpeedCruiseControl))
 		{
 			// apply maximum acceleration (= -1 for forward) to maintain target speed
 			pAccel = powerTrain.getPAccel(tpf, -1) * 20f;
+			
+			//Kiichi added
 			isAdaptiveCruiseControl = true;
 			
 			if(isAdaptiveCruiseControl)
@@ -216,7 +229,6 @@ public class SteeringCar extends Car
 		else
 		{
 			// apply acceleration according to gas pedal state
-			System.out.println("pedalstate");
 			pAccel = powerTrain.getPAccel(tpf, acceleratorPedalIntensity) * 30f;
 		}
 		transmission.performAcceleration(pAccel);
@@ -226,16 +238,17 @@ public class SteeringCar extends Car
 		
 		if(handBrakeApplied)
 		{
-			System.out.println("handBrakeApplied");
 			// hand brake
 			carControl.brake(maxBrakeForce);
 			PanelCenter.setHandBrakeIndicator(true);
 		}
 		else
 		{
-			// brake	
+			
+			// brake, every frame do with here	
+			// when we enter 'space' -> brake will be applied
 			float appliedBrakeForce = brakePedalIntensity * maxBrakeForce;
-			float currentFriction = powerTrain.getFrictionCoefficient() * maxFreeWheelBrakeForce;
+			float currentFriction = powerTrain.getFrictionCoefficient(isSnowing,isRaining,isFog) * maxFreeWheelBrakeForce;
 			carControl.brake(appliedBrakeForce + currentFriction);
 			PanelCenter.setHandBrakeIndicator(false);
 		}
@@ -278,7 +291,7 @@ public class SteeringCar extends Car
         if(simphynityController != null)
         	simphynityController.update();
 		    //simphynityController.updateNervtehInstructions();
-	}
+      	}
 	
 	
     float leftWheelsPos = 2.2f;
@@ -375,7 +388,7 @@ public class SteeringCar extends Car
 		// length of TrafficObjectList is just 1. only RobotCar
 		for(TrafficObject vehicle : PhysicalTraffic.getTrafficObjectList())
 		{
-			if(belowSafetyDistance(vehicle.getPosition()))
+			if(belowSafetyDistance(vehicle.getPosition(),isRaining, isSnowing ,isFog))
 			{
 				pAccel = 0;
 				if(vehicle.getPosition().distance(getPosition()) < emergencyBrakeDistance)
@@ -388,7 +401,7 @@ public class SteeringCar extends Car
 	}
 
 	
-	private boolean belowSafetyDistance(Vector3f obstaclePos) 
+	private boolean belowSafetyDistance(Vector3f obstaclePos, boolean isRaining, boolean isSnowing , boolean isFog) 
 	{	
 		float distance = obstaclePos.distance(getPosition());
 		//System.out.println("distance is " + distance);
@@ -401,11 +414,31 @@ public class SteeringCar extends Car
 		float lateralDistance = distance * FastMath.sin(angle);
 		float forwardDistance = distance * FastMath.cos(angle);
 		
-		if((lateralDistance < minLateralSafetyDistance) && (forwardDistance > 0) && 
+		if(isRaining){
+			if((lateralDistance < minLateralSafetyDistance) && (forwardDistance > 0) && 
+					(forwardDistance < Math.max(0.5f * getCurrentSpeedKmh() * 1.5, minForwardSafetyDistance + 1.0f)))
+			{
+				return true;
+			}
+		}else if(isSnowing){
+			if((lateralDistance < minLateralSafetyDistance) && (forwardDistance > 0) && 
+					(forwardDistance < Math.max(0.5f * getCurrentSpeedKmh() * 2.0, minForwardSafetyDistance + 2.0f)))
+			{
+				return true;
+			}
+		}else if(isFog){
+			if((lateralDistance < minLateralSafetyDistance) && (forwardDistance > 0) && 
+					(forwardDistance < Math.max(0.5f * getCurrentSpeedKmh() * 1.4, minForwardSafetyDistance + 1.0f)))
+			{
+				return true;
+			}
+		}else{ 
+			//晴天時
+			if((lateralDistance < minLateralSafetyDistance) && (forwardDistance > 0) && 
 				(forwardDistance < Math.max(0.5f * getCurrentSpeedKmh(), minForwardSafetyDistance)))
-		{
-			System.out.println("minForwardSafetyDistance is  "+ minForwardSafetyDistance);
-			return true;
+			{
+				return true;
+			}
 		}
 		
 		return false;
