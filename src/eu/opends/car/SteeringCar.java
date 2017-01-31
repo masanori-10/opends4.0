@@ -30,6 +30,7 @@ import eu.opends.car.LightTexturesContainer.TurnSignalState;
 import eu.opends.drivingTask.DrivingTask;
 import eu.opends.drivingTask.scenario.ScenarioLoader;
 import eu.opends.drivingTask.scenario.ScenarioLoader.CarProperty;
+import eu.opends.drivingTask.scene.SceneLoader;
 import eu.opends.drivingTask.settings.SettingsLoader;
 import eu.opends.drivingTask.settings.SettingsLoader.Setting;
 import eu.opends.environment.Crosswind;
@@ -41,6 +42,7 @@ import eu.opends.tools.Util;
 import eu.opends.traffic.PhysicalTraffic;
 import eu.opends.traffic.TrafficObject;
 import eu.opends.trafficObjectLocator.TrafficObjectLocator;
+import extendModelRule.ModelRule;
 
 /**
  * Driving Car
@@ -69,6 +71,8 @@ public class SteeringCar extends Car
 	// crosswind (will influence steering angle)
 	private Crosswind crosswind = new Crosswind("left", 0, 0);
 	
+	// TODO changed
+	private ModelRule modelRule;
     
 	public SteeringCar(Simulator sim) 
 	{		
@@ -76,6 +80,10 @@ public class SteeringCar extends Car
 		
 		DrivingTask drivingTask = SimulationBasics.getDrivingTask();
 		ScenarioLoader scenarioLoader = drivingTask.getScenarioLoader();
+
+		// TODO changed
+		SceneLoader sceneLoader = drivingTask.getSceneLoader();
+		this.modelRule = new ModelRule(this.sim, this, sceneLoader.getMapObjects());
 		
 		initialPosition = scenarioLoader.getStartLocation();
 		if(initialPosition == null)
@@ -176,6 +184,10 @@ public class SteeringCar extends Car
 	{
 		// accelerate
 		float pAccel = 0;
+
+		// TODO changed
+		modelRule.activateModelRule();
+
 		if(!engineOn)
 		{
 			// apply 0 acceleration when engine not running
